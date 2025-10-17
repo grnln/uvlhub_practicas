@@ -13,6 +13,13 @@ class NotepadBehavior(TaskSet):
         if response.status_code != 200:
             print(f"Notepad index failed: {response.status_code}")
 
+    @task
+    def index(self):
+        response = self.client.get("/notepad/create")
+
+        if response.status_code != 200:
+            print(f"Notepad creation failed: {response.status_code}")
+
 
 class NotepadUser(HttpUser):
     tasks = [NotepadBehavior]
