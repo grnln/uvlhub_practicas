@@ -121,6 +121,13 @@ chico sundermann">
                         </a>
                     </li>
 
+                    <li class="sidebar-item {{ 'active' if request.endpoint == 'notepad.index' else '' }}">
+                        <a class="sidebar-link" href="{{ url_for('notepad.index') }}">
+                            <i class="align-middle" data-feather="book"></i> <span
+                                class="align-middle">Notepads</span>
+                        </a>
+                    </li>
+
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ url_for('auth.logout') }}">
                             <i class="align-middle" data-feather="log-out"></i> <span

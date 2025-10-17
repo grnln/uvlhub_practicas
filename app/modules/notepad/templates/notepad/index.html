@@ -29,6 +29,9 @@
 {%else%}
     <p>
         You have no notepads.
+        <a href = "{{url_for('notepad.create_notepad')}}">
+            Create new notepad
+        </a>
     </p>
 {%endif%}
 
