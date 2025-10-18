@@ -68,6 +68,20 @@ def test_notepad_create(test_client):
 
     logout(test_client)
 
+def test_notepad_create_invalid(test_client):
+    """
+    Tests failure of the notepad creation functionality via POST request.
+    """
+    login_response = login(test_client, "user@example.com", "test1234")
+    assert login_response.status_code == 200, "Login was unsuccessful."
+
+    response = test_client.post("/notepad/create", data = {"title": None, "body": None})
+    assert response.status_code == 200, "Creation functionality did not fail when fields are set to invalid values."
+    assert b"Title" in response.data, "The expected content is not present on the page."
+    assert b"Body" in response.data, "The expected content is not present on the page."
+    
+    logout(test_client)
+
 def test_get_notepad_edit(test_client):
     """
     Tests accessibility of the notepad edition functionality via GET request.
@@ -101,6 +115,26 @@ def test_notepad_edit(test_client):
     response = test_client.get("/notepad")
     assert response.status_code == 200, "The notepad page could not be accessed."
     assert b"sample title edited" in response.data, "The expected content is not present on the page."
+    assert b"sample body edited" in response.data, "The expected content is not present on the page."
+
+    logout(test_client)
+
+def test_notepad_edit_invalid(test_client):
+    """
+    Tests failure of the notepad edition functionality via POST request.
+    """
+    login_response = login(test_client, "user@example.com", "test1234")
+    assert login_response.status_code == 200, "Login was unsuccessful."
+
+    response = test_client.post("/notepad/create", data = {"title": "sample title", "body": "sample body"})
+    assert response.status_code == 302, "Could not create a sample notepad."
+
+    response = test_client.post("/notepad/edit/1", data = {"title": None, "body": None})
+    assert response.status_code == 302, "Edition did not fail when fields are set to invalid values."
+
+    response = test_client.get("/notepad")
+    assert response.status_code == 200, "The notepad page could not be accessed."
+    assert b"sample title" in response.data, "The expected content is not present on the page."
     assert b"sample body" in response.data, "The expected content is not present on the page."
 
     logout(test_client)
@@ -117,5 +151,17 @@ def test_notepad_delete(test_client):
 
     response = test_client.post("/notepad/delete/1")
     assert response.status_code == 302, "Could not delete sample notepad."
+
+    logout(test_client)
+
+def test_notepad_delete_none(test_client):
+    """
+    Tests failure of the notepad deletion functionality via POST request.
+    """
+    login_response = login(test_client, "user@example.com", "test1234")
+    assert login_response.status_code == 200, "Login was unsuccessful."
+
+    response = test_client.post("/notepad/delete/1")
+    assert response.status_code == 404, "Deletion did not fail when no notepads are available."
 
     logout(test_client)
